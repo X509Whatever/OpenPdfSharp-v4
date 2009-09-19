@@ -57,9 +57,6 @@ namespace iTextSharp.text.pdf {
 
     public class PdfSpotColor{
     
-        /*  The tint value */
-        protected float tint;
-    
         /*  The color name */
         public PdfName name;
     
@@ -75,16 +72,9 @@ namespace iTextSharp.text.pdf {
          * @param       altcs       a altnative colorspace value
          */
     
-        public PdfSpotColor(string name, float tint, Color altcs) {
+        public PdfSpotColor(string name, Color altcs) {
             this.name = new PdfName(name);
-            this.tint = tint;
             this.altcs = altcs;
-        }
-    
-        public float Tint {
-            get {
-                return tint;
-            }
         }
     
         public Color AlternativeCS {
