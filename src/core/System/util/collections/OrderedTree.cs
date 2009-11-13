@@ -58,21 +58,27 @@ namespace System.util.collections {
         // the tree
         private OrderedTreeNode rbTree;
         // sentinelNode is convenient way of indicating a leaf node.
-        public static OrderedTreeNode sentinelNode;          
+        private OrderedTreeNode sentinelNode;          
         // the node that was last found; used to optimize searches
         private OrderedTreeNode lastNodeFound;          
         private Random rand = new Random();
 
-        static OrderedTree() {
+        //static OrderedTree() {
+        //    // set up the sentinel node. the sentinel node is the key to a successfull
+        //    // implementation and for understanding the red-black tree properties.
+        //    sentinelNode = new OrderedTreeNode();
+        //    sentinelNode.Left = sentinelNode.Right = sentinelNode;
+        //    sentinelNode.Parent = null;
+        //    sentinelNode.Color = OrderedTreeNode.BLACK;
+        //}
+
+        public OrderedTree() {
             // set up the sentinel node. the sentinel node is the key to a successfull
             // implementation and for understanding the red-black tree properties.
             sentinelNode = new OrderedTreeNode();
             sentinelNode.Left = sentinelNode.Right = sentinelNode;
             sentinelNode.Parent = null;
             sentinelNode.Color = OrderedTreeNode.BLACK;
-        }
-
-        public OrderedTree() {
             rbTree = sentinelNode;
             lastNodeFound = sentinelNode;
         }
@@ -435,7 +441,7 @@ namespace System.util.collections {
             }
         }
         public OrderedTreeEnumerator KeyElements(bool ascending) {
-            return new OrderedTreeEnumerator(rbTree, true, ascending);
+            return new OrderedTreeEnumerator(rbTree, true, ascending, sentinelNode);
         }
         ///<summary>
         /// Values
@@ -456,7 +462,7 @@ namespace System.util.collections {
             return Elements(true);
         }
         public OrderedTreeEnumerator Elements(bool ascending) {
-            return new OrderedTreeEnumerator(rbTree, false, ascending);
+            return new OrderedTreeEnumerator(rbTree, false, ascending, sentinelNode);
         }
         ///<summary>
         /// IsEmpty
@@ -678,6 +684,7 @@ namespace System.util.collections {
         // return in ascending order (true) or descending (false)
         private bool ascending;
         private OrderedTreeNode tnode;
+        private OrderedTreeNode sentinelNode;
         bool pre = true;
         
         // key
@@ -715,8 +722,8 @@ namespace System.util.collections {
         ///<summary>
         /// Determine order, walk the tree and push the nodes onto the stack
         ///</summary>
-        public OrderedTreeEnumerator(OrderedTreeNode tnode, bool keys, bool ascending) {
-            
+        public OrderedTreeEnumerator(OrderedTreeNode tnode, bool keys, bool ascending, OrderedTreeNode sentinelNode) {
+            this.sentinelNode = sentinelNode;
             stack = new Stack();
             this.keys = keys;
             this.ascending = ascending;
@@ -731,14 +738,14 @@ namespace System.util.collections {
             // the lowest node will be at the top of the stack
             if(ascending) {
                 // find the lowest node
-                while(tnode != OrderedTree.sentinelNode) {
+                while(tnode != sentinelNode) {
                     stack.Push(tnode);
                     tnode = tnode.Left;
                 }
             }
             else {
                 // the highest node will be at top of stack
-                while(tnode != OrderedTree.sentinelNode) {
+                while(tnode != sentinelNode) {
                     stack.Push(tnode);
                     tnode = tnode.Right;
                 }
@@ -774,7 +781,7 @@ namespace System.util.collections {
             OrderedTreeNode node = (OrderedTreeNode) stack.Peek(); //next node in sequence
             
             if(ascending) {
-                if(node.Right == OrderedTree.sentinelNode) {   
+                if(node.Right == sentinelNode) {   
                     // yes, top node is lowest node in subtree - pop node off stack 
                     OrderedTreeNode tn = (OrderedTreeNode) stack.Pop();
                     // peek at right node's parent 
@@ -786,14 +793,14 @@ namespace System.util.collections {
                     // find the next items in the sequence
                     // traverse to left; find lowest and push onto stack
                     OrderedTreeNode tn = node.Right;
-                    while(tn != OrderedTree.sentinelNode) {
+                    while(tn != sentinelNode) {
                         stack.Push(tn);
                         tn = tn.Left;
                     }
                 }
             }
             else { // descending, same comments as above apply
-                if(node.Left == OrderedTree.sentinelNode) {
+                if(node.Left == sentinelNode) {
                     // walk the tree
                     OrderedTreeNode tn = (OrderedTreeNode) stack.Pop();
                     while(HasMoreElements() && ((OrderedTreeNode)stack.Peek()).Left == tn)
@@ -803,7 +810,7 @@ namespace System.util.collections {
                     // determine next node in sequence
                     // traverse to left subtree and find greatest node - push onto stack
                     OrderedTreeNode tn = node.Left;
-                    while(tn != OrderedTree.sentinelNode) {
+                    while(tn != sentinelNode) {
                         stack.Push(tn);
                         tn = tn.Right;
                     }
