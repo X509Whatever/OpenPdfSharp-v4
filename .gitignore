@@ -253,4 +253,4 @@ paket-files/
 *.sln.iml
 
 # iTextSharp.xml, XML documentation
-iTextSharp.xml
+iTextFork.xml
