@@ -63,9 +63,8 @@ namespace iTextSharp.text.pdf.crypto {
         
         /** Creates a new instance of AESCipher */
         public AESCipher(bool forEncryption, byte[] key, byte[] iv) {
-            IBlockCipher aes = new AesFastEngine();
-            IBlockCipher cbc = new CbcBlockCipher(aes);
-            bp = new PaddedBufferedBlockCipher(cbc);
+            var mode = new EcbBlockCipher(new AesEngine());
+            bp = new PaddedBufferedBlockCipher(mode);
             KeyParameter kp = new KeyParameter(key);
             ParametersWithIV piv = new ParametersWithIV(kp, iv);
             bp.Init(forEncryption, piv);
