@@ -66,7 +66,7 @@ namespace iTextSharp.text.pdf {
         * This class holds information about indirect references, since they are
         * renumbered by iText.
         */
-        internal class IndirectReferences {
+        public class IndirectReferences {
             PdfIndirectReference theRef;
             bool hasCopied;
             internal IndirectReferences(PdfIndirectReference refi) {
@@ -99,7 +99,7 @@ namespace iTextSharp.text.pdf {
         /**
         * A key to allow us to hash indirect references
         */
-        protected class RefKey {
+        public class RefKey {
             internal int num;
             internal int gen;
             internal RefKey(int num, int gen) {

@@ -177,9 +177,9 @@ namespace iTextSharp.text.rtf.parser.destinations {
         
         private MemoryStream dataOS = null;
         
-        public RtfDestinationShppict() : base(null) {
-            this.pictureType = pictureType; //get rid of a warning
-        }
+        public RtfDestinationShppict()
+            : base(null)
+        { }
 
         /**
         * Constructs a new RtfDestinationShppict.
