@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using iTextSharp.text;
 /*
  * $Id: MultiColumnText.cs,v 1.13 2008/05/13 11:25:18 psoares33 Exp $
@@ -95,7 +95,7 @@ namespace iTextSharp.text.pdf {
         /**
         * Array of <CODE>ColumnDef</CODE> objects used to define the columns
         */
-        private ArrayList columnDefs;
+        private IList<ColumnDef> columnDefs;
 
         /**
         * true if all columns are simple (rectangular)
@@ -124,7 +124,7 @@ namespace iTextSharp.text.pdf {
         * @param height
         */
         public MultiColumnText(float height) {
-            columnDefs = new ArrayList();
+            columnDefs = new List<ColumnDef>();
             desiredHeight = height;
             top = AUTOMATIC;
             // canvas will be set later
@@ -140,7 +140,7 @@ namespace iTextSharp.text.pdf {
         * @param top
         */
         public MultiColumnText(float top, float height) {
-            columnDefs = new ArrayList();
+            columnDefs = new List<ColumnDef>();
             desiredHeight = height;
             this.top = top;
             nextY = top;
@@ -404,7 +404,7 @@ namespace iTextSharp.text.pdf {
         * @return  null
         */
 
-        public ArrayList Chunks {
+        public IList<Chunk> Chunks {
             get {
                 return null;
             }

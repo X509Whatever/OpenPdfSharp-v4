@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.util.collections;
 using iTextSharp.text;
@@ -224,7 +226,7 @@ namespace iTextSharp.text.pdf {
             * @param documentJavaScript the javascript used in the document
             * @param writer the writer the catalog applies to
             */
-            internal void AddNames(OrderedTree localDestinations, Hashtable documentLevelJS, Hashtable documentFileAttachment, PdfWriter writer) {
+            internal void AddNames(OrderedTree localDestinations, GenericHashTable<string, PdfObject> documentLevelJS, GenericHashTable<string, PdfObject> documentFileAttachment, PdfWriter writer) {
                 if (localDestinations.Count == 0 && documentLevelJS.Count == 0 && documentFileAttachment.Count == 0)
                     return;
                 PdfDictionary names = new PdfDictionary();
@@ -2011,7 +2013,7 @@ namespace iTextSharp.text.pdf {
         * Stores a list of document level JavaScript actions.
         */
         private int jsCounter;
-        protected internal Hashtable documentLevelJS = new Hashtable();
+        protected internal GenericHashTable<string, PdfObject> documentLevelJS = new GenericHashTable<string, PdfObject>();
 
         internal void AddJavaScript(PdfAction js) {
             if (js.Get(PdfName.JS) == null)
@@ -2026,11 +2028,11 @@ namespace iTextSharp.text.pdf {
             documentLevelJS[name] = writer.AddToBody(js).IndirectReference;
         }
 
-        internal Hashtable GetDocumentLevelJS() {
+        internal GenericHashTable<string, PdfObject> GetDocumentLevelJS() {
             return documentLevelJS;
         }
 
-        protected internal Hashtable documentFileAttachment = new Hashtable();
+        protected internal GenericHashTable<string, PdfObject> documentFileAttachment = new GenericHashTable<string, PdfObject>();
 
         internal void AddFileAttachment(String description, PdfFileSpecification fs) {
             if (description == null) {
@@ -2054,7 +2056,7 @@ namespace iTextSharp.text.pdf {
             documentFileAttachment[fn] = fs.Reference;
         }
         
-        internal Hashtable GetDocumentFileAttachment() {
+        internal GenericHashTable<string, PdfObject> GetDocumentFileAttachment() {
             return documentFileAttachment;
         }
 
@@ -2568,7 +2570,7 @@ namespace iTextSharp.text.pdf {
                 bool cellsShown = false;
 
                 // draw the cells (line by line)
-                ListIterator iterator = new ListIterator(rows);
+                var iterator = new ListIterator(rows);
                   
                 bool atLeastOneFits = false;
                 while (iterator.HasNext()) {

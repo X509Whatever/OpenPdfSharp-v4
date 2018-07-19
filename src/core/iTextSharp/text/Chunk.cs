@@ -1,6 +1,6 @@
 using System;
 using System.Text;
-using System.Collections;
+using System.Collections.Generic;
 using System.util;
 
 using iTextSharp.text.pdf;
@@ -100,7 +100,7 @@ namespace iTextSharp.text {
         protected Font font = null;
 
         ///<summary> Contains some of the attributes for this Chunk. </summary>
-        protected Hashtable attributes = null;
+        protected GenericHashTable<string, object> attributes = null;
 
         // constructors
 
@@ -275,9 +275,9 @@ namespace iTextSharp.text {
         /// Gets all the chunks in this element.
         /// </summary>
         /// <value>an ArrayList</value>
-        public ArrayList Chunks {
+        public IList<Chunk> Chunks {
             get {
-                ArrayList tmp = new ArrayList();
+                var tmp = new List<Chunk>();
                 tmp.Add(this);
                 return tmp;
             }
@@ -360,7 +360,7 @@ namespace iTextSharp.text {
         /// It may be null.
         /// </remarks>
         /// <value>a Hashtable</value>
-        public Hashtable Attributes {
+        public GenericHashTable<string, object> Attributes {
             get {
                 return attributes;
             }
@@ -377,7 +377,7 @@ namespace iTextSharp.text {
         /// <returns>this Chunk</returns>
         private Chunk SetAttribute(string name, Object obj) {
             if (attributes == null)
-                attributes = new Hashtable();
+                attributes = new GenericHashTable<string, object>();
             attributes[name] = obj;
             return this;
         }
@@ -442,7 +442,7 @@ namespace iTextSharp.text {
         */    
         public Chunk SetUnderline(Color color, float thickness, float thicknessMul, float yPosition, float yPositionMul, int cap) {
             if (attributes == null)
-                attributes = new Hashtable();
+                attributes = new GenericHashTable<string, object>();
             Object[] obj = {color, new float[]{thickness, thicknessMul, yPosition, yPositionMul, (float)cap}};
             Object[][] unders = Utilities.AddToArray((Object[][])attributes[UNDERLINE], obj);
             return SetAttribute(UNDERLINE, unders);

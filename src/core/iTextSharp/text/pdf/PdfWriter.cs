@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Collections;
+using System.Collections.Generic;
 using System.util.collections;
 using System.util;
 using iTextSharp.text;
@@ -1268,14 +1269,14 @@ namespace iTextSharp.text.pdf {
             }
         }
 
-        protected ArrayList newBookmarks;
+        protected IList<GenericHashTable<string, object>> newBookmarks;
          
         /**
         * Sets the bookmarks. The list structure is defined in
         * {@link SimpleBookmark}.
         * @param outlines the bookmarks or <CODE>null</CODE> to remove any
         */    
-        public ArrayList Outlines {
+        public IList<GenericHashTable<string, object>> Outlines {
             set {
                 newBookmarks = value;
             }
@@ -1824,7 +1825,7 @@ namespace iTextSharp.text.pdf {
             PdfArray outs = catalog.GetAsArray(PdfName.OUTPUTINTENTS);
             if (outs == null)
                 return false;
-            ArrayList arr = outs.ArrayList;
+            var arr = outs.ArrayList;
             if (outs.Size == 0)
                 return false;
             PdfDictionary outa = outs.GetAsDict(0);
@@ -2659,7 +2660,7 @@ namespace iTextSharp.text.pdf {
         
         /**
         * A group attributes dictionary specifying the attributes
-        * of the page’s page group for use in the transparent
+        * of the pageï¿½s page group for use in the transparent
         * imaging model
         */
         protected PdfDictionary group;

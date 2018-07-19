@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 /*
  * Copyright 2003 Paulo Soares
@@ -147,7 +148,7 @@ namespace iTextSharp.text.xml.simpleparser {
         /** current tagname */
         internal String tag = null;
         /** current attributes */
-        internal Hashtable attributes = null;
+        internal GenericHashTable<string, string> attributes = null;
         /** The handler to which we are going to forward document content */
         internal ISimpleXMLDocHandler doc;
         /** The handler to which we are going to forward comments. */
@@ -532,7 +533,7 @@ namespace iTextSharp.text.xml.simpleparser {
         */
         private void InitTag() {
             tag = null;
-            attributes = new Hashtable();
+            attributes = new GenericHashTable<string, string>();
         }
         /** Sets the name of the tag. */
         private void DoTag() {

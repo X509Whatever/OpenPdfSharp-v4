@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Collections;
+using System.Collections.Generic;
 /*
  * Copyright 1999-2004 The Apache Software Foundation.
  * 
@@ -420,7 +421,7 @@ namespace iTextSharp.text.pdf.hyphenation {
         * @param hyphenatedword a vector of alternating strings and
         * {@link Hyphen hyphen} objects.
         */
-        public void AddException(String word, ArrayList hyphenatedword) {
+        public void AddException(String word, List<object> hyphenatedword) {
             stoplist[word] = hyphenatedword;
         }
 

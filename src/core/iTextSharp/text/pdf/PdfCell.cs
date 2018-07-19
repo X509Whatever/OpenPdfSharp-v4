@@ -206,7 +206,7 @@ namespace iTextSharp.text.pdf {
                             line = new PdfLine(currentLeft, currentRight, alignment, currentLineLeading);
                         }
                         // we loop over the chunks
-                        ArrayList chunks = ele.Chunks;
+                        var chunks = ele.Chunks;
                         if (chunks.Count == 0) {
                             AddLine(line); // add empty line - all cells need some lines even if they are empty
                             line = new PdfLine(currentLeft, currentRight, alignment, currentLineLeading);

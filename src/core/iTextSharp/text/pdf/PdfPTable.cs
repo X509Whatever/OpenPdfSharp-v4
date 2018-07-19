@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 using iTextSharp.text;
 using iTextSharp.text.pdf.events;
@@ -77,7 +77,7 @@ namespace iTextSharp.text.pdf {
         */    
         public const int TEXTCANVAS = 3;
         
-        protected ArrayList rows = new ArrayList();
+        protected IList<PdfPRow> rows = new List<PdfPRow>();
         protected float totalHeight = 0;
         protected PdfPCell[] currentRow;
         protected int currentRowIdx = 0;
@@ -895,7 +895,7 @@ namespace iTextSharp.text.pdf {
         * Removes all of the rows except headers
         */
         public void DeleteBodyRows() {
-            ArrayList rows2 = new ArrayList();
+            var rows2 = new List<PdfPRow>();
             for (int k = 0; k < headerRows; ++k)
                 rows2.Add(rows[k]);
             rows = rows2;
@@ -940,9 +940,9 @@ namespace iTextSharp.text.pdf {
         *
         * @return    an <CODE>ArrayList</CODE>
         */
-        public ArrayList Chunks {
+        public IList<Chunk> Chunks {
             get {
-                return new ArrayList();
+                return new List<Chunk>();
             }
         }
         
@@ -1021,7 +1021,7 @@ namespace iTextSharp.text.pdf {
         * Gets an arraylist with all the rows in the table.
         * @return an arraylist
         */
-        public ArrayList Rows {
+        public IList<PdfPRow> Rows {
             get {
                 return rows;
             }
@@ -1034,8 +1034,8 @@ namespace iTextSharp.text.pdf {
         * @return   a selection of rows
         * @since    2.1.6
         */
-        public ArrayList GetRows(int start, int end) {
-            ArrayList list = new ArrayList();
+        public IList<PdfPRow> GetRows(int start, int end) {
+            var list = new List<PdfPRow>();
             if (start < 0 || end > Size) {
                 return list;
             }

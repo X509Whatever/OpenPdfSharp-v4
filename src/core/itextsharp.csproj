@@ -110,6 +110,7 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Facilities\System.Collections.Generic\GenericHashTable.cs" />
     <Compile Include="iTextSharp\text\Anchor.cs">
       <SubType>Code</SubType>
     </Compile>

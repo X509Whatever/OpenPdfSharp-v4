@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 /*
  * Copyright 2004 Paulo Soares
  *
@@ -51,64 +51,59 @@ namespace iTextSharp.text.html.simpleparser {
 
     public class StyleSheet {
         
-        public Hashtable classMap = new Hashtable();
-        public Hashtable tagMap = new Hashtable();
+        public IDictionary<string, IDictionary<string, string>> classMap = new GenericHashTable<string, IDictionary<string, string>>();
+        public IDictionary<string, IDictionary<string, string>> tagMap = new GenericHashTable<string, IDictionary<string, string>>();
         
         /** Creates a new instance of StyleSheet */
         public StyleSheet() {
         }
         
-        public void ApplyStyle(String tag, Hashtable props) {
-            Hashtable map = (Hashtable)tagMap[tag.ToLower(System.Globalization.CultureInfo.InvariantCulture)];
-            Hashtable temp;
+        public void ApplyStyle(String tag, GenericHashTable<string, string> props) {
+            tagMap.TryGetValue(tag.ToLower(System.Globalization.CultureInfo.InvariantCulture), out var map);
             if (map != null) {
-                temp = new Hashtable(map);
-                foreach (DictionaryEntry dc in props)
+                var temp = new GenericHashTable<string, string>(map);
+                foreach (var dc in props)
                     temp[dc.Key] = dc.Value;
-                foreach (DictionaryEntry dc in temp)
+                foreach (var dc in temp)
                     props[dc.Key] = dc.Value;
             }
             String cm = (String)props[Markup.HTML_ATTR_CSS_CLASS];
             if (cm == null)
                 return;
-            map = (Hashtable)classMap[cm.ToLower(System.Globalization.CultureInfo.InvariantCulture)];
+            classMap.TryGetValue(cm.ToLower(System.Globalization.CultureInfo.InvariantCulture), out map);
             if (map == null)
                 return;
             props.Remove(Markup.HTML_ATTR_CSS_CLASS);
-            temp = new Hashtable(map);
-            foreach (DictionaryEntry dc in props)
-                temp[dc.Key] = dc.Value;
-            foreach (DictionaryEntry dc in temp)
+            var temp1 = new GenericHashTable<string, string>(map);
+            foreach (var dc in props)
+                temp1[dc.Key] = dc.Value;
+            foreach (var dc in temp1)
                 props[dc.Key] = dc.Value;
         }
-        
-        private void ApplyMap(Hashtable map, Hashtable props) {
-            
-        }
-        
-        public void LoadStyle(String style, Hashtable props) {
+
+        public void LoadStyle(String style, GenericHashTable<string, string> props) {
             classMap[style.ToLower(System.Globalization.CultureInfo.InvariantCulture)] = props;
         }
 
         public void LoadStyle(String style, String key, String value) {
             style = style.ToLower(System.Globalization.CultureInfo.InvariantCulture);
-            Hashtable props = (Hashtable)classMap[style];
+            classMap.TryGetValue(style, out var props);
             if (props == null) {
-                props = new Hashtable();
+                props = new GenericHashTable<string, string>();
                 classMap[style] = props;
             }
             props[key] = value;
         }
         
-        public void LoadTagStyle(String tag, Hashtable props) {
+        public void LoadTagStyle(String tag, GenericHashTable<string, string> props) {
             tagMap[tag.ToLower(System.Globalization.CultureInfo.InvariantCulture)] = props;
         }
 
         public void LoadTagStyle(String tag, String key, String value) {
             tag = tag.ToLower(System.Globalization.CultureInfo.InvariantCulture);
-            Hashtable props = (Hashtable)tagMap[tag];
+            tagMap.TryGetValue(tag, out var props);
             if (props == null) {
-                props = new Hashtable();
+                props = new GenericHashTable<string, string>();
                 tagMap[tag] = props;
             }
             props[key] = value;

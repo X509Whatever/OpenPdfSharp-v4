@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.util;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
@@ -58,7 +58,7 @@ namespace iTextSharp.text.html.simpleparser {
     */
     public class IncCell : ITextElementArray {
         
-        private ArrayList chunks = new ArrayList();
+        private IList<Chunk> chunks = new List<Chunk>();
         private PdfPCell cell;
         
         /** Creates a new instance of IncCell */
@@ -101,14 +101,12 @@ namespace iTextSharp.text.html.simpleparser {
             cell.BackgroundColor = Markup.DecodeColor(value);
         }
         
-        public bool Add(Object o) {
-            if (!(o is IElement))
-                return false;
-            cell.AddElement((IElement)o);
+        public bool Add(IElement o) {
+            cell.AddElement(o);
             return true;
         }
         
-        public ArrayList Chunks {
+        public IList<Chunk> Chunks {
             get {
                 return chunks;
             }

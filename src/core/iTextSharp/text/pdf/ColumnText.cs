@@ -1114,13 +1114,13 @@ public class ColumnText {
             }
             else if (element.Type == Element.LIST) {
                 List list = (List)element;
-                ArrayList items = list.Items;
+                var items = list.Items;
                 ListItem item = null;
                 float listIndentation = list.IndentationLeft;
                 int count = 0;
                 Stack stack = new Stack();
                 for (int k = 0; k < items.Count; ++k) {
-                    Object obj = items[k];
+                    var obj = items[k];
                     if (obj is ListItem) {
                         if (count == listIdx) {
                             item = (ListItem)obj;
@@ -1299,7 +1299,7 @@ public class ColumnText {
                             splittedRow = true;
                             table = new PdfPTable(table);
                             compositeElements[0] = table;
-                            ArrayList rows = table.Rows;
+                            var rows = table.Rows;
                             for (int i = headerRows; i < listIdx; ++i)
                                 rows[i] = null;
                         }
@@ -1341,7 +1341,7 @@ public class ColumnText {
                     }
                     // copy the rows that fit on the page in a new table nt
                     PdfPTable nt = PdfPTable.ShallowCopy(table);
-                    ArrayList sub = nt.Rows;
+                    var sub = nt.Rows;
                     
                     // first we add the real header rows (if necessary)
                     if (!skipHeader) {
@@ -1354,7 +1354,9 @@ public class ColumnText {
                         nt.HeaderRows = footerRows;
                     }
                     // then we add the real content
-                    sub.AddRange(table.GetRows(listIdx, k));
+                    foreach (var r in table.GetRows(listIdx, k))
+                        sub.Add(r);
+                        
                     // if k < table.size(), we must indicate that the new table is complete;
                     // otherwise no footers will be added (because iText thinks the table continues on the same page)
                     bool showFooter = !table.SkipLastFooter;
@@ -1400,7 +1402,7 @@ public class ColumnText {
                 }
                 else {
                     if (splittedRow) {
-                        ArrayList rows = table.Rows;
+                        var rows = table.Rows;
                         for (int i = listIdx; i < k; ++i)
                             rows[i] = null;
                     }

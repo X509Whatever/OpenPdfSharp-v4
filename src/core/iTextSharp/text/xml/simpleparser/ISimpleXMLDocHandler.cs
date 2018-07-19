@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 /*
  * Copyright 2003 Paulo Soares
  *
@@ -58,7 +58,7 @@ namespace iTextSharp.text.xml.simpleparser {
         * @param tag the tag name
         * @param h the tag's attributes
         */    
-        void StartElement(String tag, Hashtable h);
+        void StartElement(String tag, GenericHashTable<string, string> h);
         /**
         * Called when an end tag is found.
         * @param tag the tag name

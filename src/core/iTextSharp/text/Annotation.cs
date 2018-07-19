@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.util;
 using iTextSharp.text.factories;
 
@@ -120,7 +120,7 @@ namespace iTextSharp.text
         protected int annotationtype;
     
         /// <summary>This is the title of the Annotation.</summary>
-        protected Hashtable annotationAttributes = new Hashtable();
+        protected GenericHashTable<string, object> annotationAttributes = new GenericHashTable<string, object>();
 
         /// <summary>This is the lower left x-value</summary>
         private float llx = float.NaN;
@@ -338,11 +338,11 @@ namespace iTextSharp.text
         /// Gets all the chunks in this element.
         /// </summary>
         /// <value>an ArrayList</value>
-        public ArrayList Chunks 
+        public IList<Chunk> Chunks 
         {
             get 
             {
-                return new ArrayList();
+                return new List<Chunk>();
             }
         }
    
@@ -494,7 +494,7 @@ namespace iTextSharp.text
         /// Gets the content of this Annotation.
         /// </summary>
         /// <value>a reference</value>
-        public Hashtable Attributes 
+        public GenericHashTable<string, object> Attributes 
         {
             get 
             {

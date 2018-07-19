@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.util;
 
 using iTextSharp.text.html;
@@ -109,7 +109,7 @@ namespace iTextSharp.text {
         // membervariables
 
         ///<summary> This is the ArrayList of Elements. </summary>
-        protected ArrayList arrayList = null;
+        protected IList<IElement> arrayList = null;
 
         ///<summary> This is the horizontal Element. </summary>
         protected int horizontalAlignment = Element.ALIGN_UNDEFINED;
@@ -174,7 +174,7 @@ namespace iTextSharp.text {
             this.BorderWidth = 0.5F;
             
             // initializes the arraylist and adds an element
-            arrayList = new ArrayList();
+            arrayList = new List<IElement>();
         }
 
         /// <summary>
@@ -242,9 +242,9 @@ namespace iTextSharp.text {
         /// Gets all the chunks in this element.
         /// </summary>
         /// <value>an ArrayList</value>
-        public override ArrayList Chunks {
+        public override IList<Chunk> Chunks {
             get {
-                ArrayList tmp = new ArrayList();
+                var tmp = new List<Chunk>();
                 foreach (IElement ele in arrayList) {
                     tmp.AddRange(ele.Chunks);
                 }
@@ -365,9 +365,9 @@ namespace iTextSharp.text {
         /// </summary>
         /// <param name="o">the object to add</param>
         /// <returns>always true</returns>
-        public bool Add(Object o) {
+        public bool Add(IElement o) {
             try {
-                this.AddElement((IElement) o);
+                this.AddElement(o);
                 return true;
             }
             catch (BadElementException bee) {
@@ -519,7 +519,7 @@ namespace iTextSharp.text {
         /// Gets Elements.
         /// </summary>
         /// <value>an ArrayList</value>
-        public ArrayList Elements {
+        public IList<IElement> Elements {
             get {
                 return arrayList;
             }

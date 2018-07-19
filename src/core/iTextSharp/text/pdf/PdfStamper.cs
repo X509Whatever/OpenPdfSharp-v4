@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections;
+using System.Collections.Generic;
 using iTextSharp.text.pdf.interfaces;
 using iTextSharp.text.pdf.collection;
 using Org.BouncyCastle.X509;
@@ -61,7 +62,7 @@ namespace iTextSharp.text.pdf {
     * flatten them. New fields can be added but not flattened.
     * @author Paulo Soares (psoares@consiste.pt)
     */
-    public class PdfStamper : IPdfViewerPreferences, IPdfEncryptionSettings {
+    public class PdfStamper : IPdfViewerPreferences, IPdfEncryptionSettings, IDisposable {
         /**
         * The writer
         */    
@@ -436,7 +437,7 @@ namespace iTextSharp.text.pdf {
         * {@link SimpleBookmark}.
         * @param outlines the bookmarks or <CODE>null</CODE> to remove any
         */    
-        public ArrayList Outlines {
+        public IList<GenericHashTable<string, object>> Outlines {
             set {
                 stamper.Outlines = value;
             }
@@ -757,6 +758,11 @@ namespace iTextSharp.text.pdf {
         */
         public Hashtable GetPdfLayers() {
             return stamper.GetPdfLayers();
+        }
+
+        public void Dispose()
+        {
+            Close();
         }
     }
 }

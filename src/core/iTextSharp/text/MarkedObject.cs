@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.util;
 /*
  * $Id: MarkedObject.cs,v 1.4 2008/05/13 11:25:11 psoares33 Exp $
@@ -88,7 +88,7 @@ namespace iTextSharp.text {
         *
         * @return  an <CODE>ArrayList</CODE>
         */
-        public virtual ArrayList Chunks {
+        public virtual IList<Chunk> Chunks {
             get {
                 return element.Chunks;
             }

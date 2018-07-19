@@ -569,7 +569,7 @@ namespace iTextSharp.text.html {
                     }
                 
                     if (chunk.IsEmpty()) return;
-                    Hashtable attributes = chunk.Attributes;
+                    var attributes = chunk.Attributes;
                     if (attributes != null && attributes[Chunk.NEWPAGE] != null) {
                         return;
                     }

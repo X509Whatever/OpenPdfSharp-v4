@@ -119,7 +119,7 @@ namespace iTextSharp.text.pdf {
             PdfObject obj = struc.Get(PdfName.K);
             if (obj != null && obj.IsArray() && !((PdfObject)((PdfArray)obj).ArrayList[0]).IsNumber()) {
                 PdfArray ar = (PdfArray)obj;
-                ArrayList a = ar.ArrayList;
+                var a = ar.ArrayList;
                 for (int k = 0; k < a.Count; ++k) {
                     PdfStructureElement e = (PdfStructureElement)a[k];
                     a[k] = e.Reference;

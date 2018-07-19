@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.util;
 using iTextSharp.text;
@@ -64,7 +65,7 @@ namespace iTextSharp.text.html.simpleparser {
         protected IDocListener document;
         private Paragraph currentParagraph;
         private ChainedProperties cprops = new ChainedProperties();
-        private Stack stack = new Stack();
+        private Stack<object> stack = new Stack<object>();
         private bool pendingTR = false;
         private bool pendingTD = false;
         private bool pendingLI = false;
@@ -131,18 +132,18 @@ namespace iTextSharp.text.html.simpleparser {
         }
         
         public virtual void StartDocument() {
-            Hashtable h = new Hashtable();
+            var h = new GenericHashTable<string, string>();
             style.ApplyStyle("body", h);
             cprops.AddToChain("body", h);
         }
         
-        public virtual void StartElement(String tag, Hashtable h) {
+        public virtual void StartElement(String tag, GenericHashTable<string, string> h) {
             if (!tagsSupported.ContainsKey(tag))
                 return;
             style.ApplyStyle(tag, h);
             String follow = (String)FactoryProperties.followTags[tag];
             if (follow != null) {
-                Hashtable prop = new Hashtable();
+                var prop = new GenericHashTable<string, string>();
                 prop[follow] = null;
                 cprops.AddToChain(follow, prop);
                 return;
@@ -411,7 +412,7 @@ namespace iTextSharp.text.html.simpleparser {
                 if (!skip) {
                     String href = cprops["href"];
                     if (href != null) {
-                        ArrayList chunks = currentParagraph.Chunks;
+                        var chunks = currentParagraph.Chunks;
                         for (int k = 0; k < chunks.Count; ++k) {
                             Chunk ck = (Chunk)chunks[k];
                             ck.SetAnchor(href);
@@ -433,7 +434,7 @@ namespace iTextSharp.text.html.simpleparser {
                 if (stack.Count == 0)
                     document.Add(currentParagraph);
                 else {
-                    Object obj = stack.Pop();
+                    var obj = (IElement)stack.Pop();
                     if (obj is ITextElementArray) {
                         ITextElementArray current = (ITextElementArray)obj;
                         current.Add(currentParagraph);
@@ -449,13 +450,13 @@ namespace iTextSharp.text.html.simpleparser {
                 cprops.RemoveChain(tag);
                 if (stack.Count == 0)
                     return;
-                Object obj = stack.Pop();
+                var obj = (IElement)stack.Pop();
                 if (!(obj is List)) {
                     stack.Push(obj);
                     return;
                 }
                 if (stack.Count == 0)
-                    document.Add((IElement)obj);
+                    document.Add(obj);
                 else
                     ((ITextElementArray)stack.Peek()).Add(obj);
                 return;
@@ -466,23 +467,23 @@ namespace iTextSharp.text.html.simpleparser {
                 cprops.RemoveChain(tag);
                 if (stack.Count == 0)
                     return;
-                Object obj = stack.Pop();
+                var obj = (IElement)stack.Pop();
                 if (!(obj is ListItem)) {
                     stack.Push(obj);
                     return;
                 }
                 if (stack.Count == 0) {
-                    document.Add((IElement)obj);
+                    document.Add(obj);
                     return;
                 }
-                Object list = stack.Pop();
+                var list = (IElement)stack.Pop();
                 if (!(list is List)) {
                     stack.Push(list);
                     return;
                 }
                 ListItem item = (ListItem)obj;
                 ((List)list).Add(item);
-                ArrayList cks = item.Chunks;
+                var cks = item.Chunks;
                 if (cks.Count > 0)
                     item.ListSymbol.Font = ((Chunk)cks[0]).Font;
                 stack.Push(list);
@@ -509,7 +510,7 @@ namespace iTextSharp.text.html.simpleparser {
                 if (pendingTR)
                     EndElement("tr");
                 cprops.RemoveChain("table");
-                IncTable table = (IncTable) stack.Pop();
+                var table = (IncTable) stack.Pop();
                 PdfPTable tb = table.BuildTable();
                 tb.SplitRows = true;
                 if (stack.Count == 0)
@@ -527,10 +528,10 @@ namespace iTextSharp.text.html.simpleparser {
                     EndElement("td");
                 pendingTR = false;
                 cprops.RemoveChain("tr");
-                ArrayList cells = new ArrayList();
+                var cells = new List<PdfPCell>();
                 IncTable table = null;
                 while (true) {
-                    Object obj = stack.Pop();
+                    var obj = stack.Pop();
                     if (obj is IncCell) {
                         cells.Add(((IncCell)obj).Cell);
                     }

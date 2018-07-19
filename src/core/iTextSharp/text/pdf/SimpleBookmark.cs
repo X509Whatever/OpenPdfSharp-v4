@@ -1,6 +1,7 @@
 using System;
 using System.IO;
-using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.util;
 using iTextSharp.text.xml.simpleparser;
@@ -95,17 +96,17 @@ namespace iTextSharp.text.pdf {
     */
     public sealed class SimpleBookmark : ISimpleXMLDocHandler {
         
-        private ArrayList topList;
-        private Stack attr = new Stack();
+        private List<GenericHashTable<string, object>> topList;
+        private Stack<GenericHashTable<string, object>> attr = new Stack<GenericHashTable<string, object>>();
         
         /** Creates a new instance of SimpleBookmark */
         private SimpleBookmark() {
         }
         
-        private static ArrayList BookmarkDepth(PdfReader reader, PdfDictionary outline, IntHashtable pages) {
-            ArrayList list = new ArrayList();
+        private static IList<GenericHashTable<string, object>> BookmarkDepth(PdfReader reader, PdfDictionary outline, IntHashtable pages) {
+            var list = new List<GenericHashTable<string, object>>();
             while (outline != null) {
-                Hashtable map = new Hashtable();
+                var map = new GenericHashTable<string, object>();
                 PdfString title = (PdfString)PdfReader.GetPdfObjectRelease(outline.Get(PdfName.TITLE));
                 map["Title"] = title.ToUnicodeString();
                 PdfArray color = (PdfArray)PdfReader.GetPdfObjectRelease(outline.Get(PdfName.C));
@@ -212,7 +213,7 @@ namespace iTextSharp.text.pdf {
             return list;
         }
         
-        private static void MapGotoBookmark(Hashtable map, PdfObject dest, IntHashtable pages) 
+        private static void MapGotoBookmark(GenericHashTable<string, object> map, PdfObject dest, IntHashtable pages) 
         {
             if (dest.IsString())
                 map["Named"] = dest.ToString();
@@ -261,7 +262,7 @@ namespace iTextSharp.text.pdf {
         * @return a <CODE>List</CODE> with the bookmarks or <CODE>null</CODE> if the
         * document doesn't have any
         */    
-        public static ArrayList GetBookmark(PdfReader reader) {
+        public static IList<GenericHashTable<string, object>> GetBookmark(PdfReader reader) {
             PdfDictionary catalog = reader.Catalog;
             PdfObject obj = PdfReader.GetPdfObjectRelease(catalog.Get(PdfName.OUTLINES));
             if (obj == null || !obj.IsDictionary())
@@ -283,12 +284,12 @@ namespace iTextSharp.text.pdf {
         * @param list the bookmarks
         * @param pageRange the page ranges, always in pairs.
         */    
-        public static void EliminatePages(ArrayList list, int[] pageRange) {
+        public static void EliminatePages(IList<GenericHashTable<string, object>> list, int[] pageRange) {
             if (list == null)
                 return;
 
-            for (ListIterator it = new ListIterator(list); it.HasNext();) {
-                Hashtable map = (Hashtable)it.Next();
+            for (var it = new ListIterator<GenericHashTable<string, object>>(list); it.HasNext();) {
+                var map = it.Next();
                 bool hit = false;
                 if ("GoTo".Equals(map["Action"])) {
                     String page = (String)map["Page"];
@@ -309,7 +310,7 @@ namespace iTextSharp.text.pdf {
                         }
                     }
                 }
-                ArrayList kids = (ArrayList)map["Kids"];
+                var kids = map.TryGetValue("Kids", out var k0) ? (IList<GenericHashTable<string, object>>)k0 : null;
                 if (kids != null) {
                     EliminatePages(kids, pageRange);
                     if (kids.Count == 0) {
@@ -339,10 +340,10 @@ namespace iTextSharp.text.pdf {
         * @param pageRange the page ranges, always in pairs. It can be <CODE>null</CODE>
         * to include all the pages
         */    
-        public static void ShiftPageNumbers(ArrayList list, int pageShift, int[] pageRange) {
+        public static void ShiftPageNumbers(IList<GenericHashTable<string, object>> list, int pageShift, int[] pageRange) {
             if (list == null)
                 return;
-            foreach (Hashtable map in list) {
+            foreach (var map in list) {
                 if ("GoTo".Equals(map["Action"])) {
                     String page = (String)map["Page"];
                     if (page != null) {
@@ -374,13 +375,13 @@ namespace iTextSharp.text.pdf {
                         map["Page"] = page;
                     }
                 }
-                ArrayList kids = (ArrayList)map["Kids"];
+                var kids = map.TryGetValue("Kids", out var k0) ? (IList<GenericHashTable<string, object>>)k0 : null;
                 if (kids != null)
                     ShiftPageNumbers(kids, pageShift, pageRange);
             }
         }
         
-        internal static void CreateOutlineAction(PdfDictionary outline, Hashtable map, PdfWriter writer, bool namedAsNames) {
+        internal static void CreateOutlineAction(PdfDictionary outline, GenericHashTable<string, object> map, PdfWriter writer, bool namedAsNames) {
             try {
                 String action = (String)map["Action"];
                 if ("GoTo".Equals(action)) {
@@ -484,16 +485,16 @@ namespace iTextSharp.text.pdf {
             }
         }
 
-        public static Object[] IterateOutlines(PdfWriter writer, PdfIndirectReference parent, ArrayList kids, bool namedAsNames) {
-            PdfIndirectReference[] refs = new PdfIndirectReference[kids.Count];
+        public static Object[] IterateOutlines(PdfWriter writer, PdfIndirectReference parent, IEnumerable<GenericHashTable<string, object>> kids, bool namedAsNames) {
+            PdfIndirectReference[] refs = new PdfIndirectReference[kids.Count()];
             for (int k = 0; k < refs.Length; ++k)
                 refs[k] = writer.PdfIndirectReference;
             int ptr = 0;
             int count = 0;
-            foreach (Hashtable map in kids) {
+            foreach (var map in kids) {
                 Object[] lower = null;
-                ArrayList subKid = (ArrayList)map["Kids"];
-                if (subKid != null && subKid.Count > 0)
+                var subKid = map.TryGetValue("Kids", out var k0) ? (IEnumerable<GenericHashTable<string, object>>)k0 : null;
+                if (subKid != null && subKid.Count() > 0)
                     lower = IterateOutlines(writer, refs[ptr], subKid, namedAsNames);
                 PdfDictionary outline = new PdfDictionary();
                 ++count;
@@ -557,23 +558,23 @@ namespace iTextSharp.text.pdf {
         * whatever the encoding
         * @throws IOException on error
         */
-        public static void ExportToXMLNode(ArrayList list, TextWriter outp, int indent, bool onlyASCII) {
+        public static void ExportToXMLNode(IList<GenericHashTable<string, object>> list, TextWriter outp, int indent, bool onlyASCII) {
             String dep = "";
             for (int k = 0; k < indent; ++k)
                 dep += "  ";
-            foreach (Hashtable map in list) {
+            foreach (var map in list) {
                 String title = null;
                 outp.Write(dep);
                 outp.Write("<Title ");
-                ArrayList kids = null;
-                foreach (DictionaryEntry entry in map) {
+                IList<GenericHashTable<string, object>> kids = null;
+                foreach (var entry in map) {
                     String key = (String)entry.Key;
                     if (key.Equals("Title")) {
                         title = (String)entry.Value;
                         continue;
                     }
                     else if (key.Equals("Kids")) {
-                        kids = (ArrayList)entry.Value;
+                        kids = (IList<GenericHashTable<string, object>>)entry.Value;
                         continue;
                     }
                     else {
@@ -626,7 +627,7 @@ namespace iTextSharp.text.pdf {
         * whatever the encoding
         * @throws IOException on error
         */    
-        public static void ExportToXML(ArrayList list, Stream outp, String encoding, bool onlyASCII) {
+        public static void ExportToXML(IList<GenericHashTable<string, object>> list, Stream outp, String encoding, bool onlyASCII) {
             StreamWriter wrt = new StreamWriter(outp, IanaEncodings.GetEncodingEncoding(encoding));
             ExportToXML(list, wrt, encoding, onlyASCII);
         }
@@ -640,7 +641,7 @@ namespace iTextSharp.text.pdf {
         * whatever the encoding
         * @throws IOException on error
         */
-        public static void ExportToXML(ArrayList list, TextWriter wrt, String encoding, bool onlyASCII) {
+        public static void ExportToXML(IList<GenericHashTable<string, object>> list, TextWriter wrt, String encoding, bool onlyASCII) {
             wrt.Write("<?xml version=\"1.0\" encoding=\"");
             wrt.Write(SimpleXMLParser.EscapeXML(encoding, onlyASCII));
             wrt.Write("\"?>\n<Bookmark>\n");
@@ -655,7 +656,7 @@ namespace iTextSharp.text.pdf {
         * @throws IOException on error
         * @return the bookmarks
         */    
-        public static ArrayList ImportFromXML(Stream inp) {
+        public static IList<GenericHashTable<string, object>> ImportFromXML(Stream inp) {
             SimpleBookmark book = new SimpleBookmark();
             SimpleXMLParser.Parse(book, inp);
             return book.topList;
@@ -667,7 +668,7 @@ namespace iTextSharp.text.pdf {
         * @throws IOException on error
         * @return the bookmarks
         */
-        public static ArrayList ImportFromXML(TextReader inp) {
+        public static IList<GenericHashTable<string, object>> ImportFromXML(TextReader inp) {
             SimpleBookmark book = new SimpleBookmark();
             SimpleXMLParser.Parse(book, inp);
             return book.topList;
@@ -747,7 +748,7 @@ namespace iTextSharp.text.pdf {
             }
             if (!tag.Equals("Title"))
                 throw new Exception("Invalid end tag - " + tag);
-            Hashtable attributes = (Hashtable)attr.Pop();
+            var attributes = attr.Pop();
             String title = (String)attributes["Title"];
             attributes["Title"] = title.Trim();
             String named = (String)attributes["Named"];
@@ -759,10 +760,10 @@ namespace iTextSharp.text.pdf {
             if (attr.Count == 0)
                 topList.Add(attributes);
             else {
-                Hashtable parent = (Hashtable)attr.Peek();
-                ArrayList kids = (ArrayList)parent["Kids"];
+                var parent = attr.Peek();
+                var kids = parent.TryGetValue("Kids", out var k0) ? (IList<GenericHashTable<string, object>>)k0 : null;
                 if (kids == null) {
-                    kids = new ArrayList();
+                    kids = new List<GenericHashTable<string, object>>();
                     parent["Kids"] = kids;
                 }
                 kids.Add(attributes);
@@ -772,10 +773,10 @@ namespace iTextSharp.text.pdf {
         public void StartDocument() {
         }
         
-        public void StartElement(String tag, Hashtable h) {
+        public void StartElement(String tag, GenericHashTable<string, string> h) {
             if (topList == null) {
                 if (tag.Equals("Bookmark")) {
-                    topList = new ArrayList();
+                    topList = new List<GenericHashTable<string, object>>();
                     return;
                 }
                 else
@@ -783,7 +784,10 @@ namespace iTextSharp.text.pdf {
             }
             if (!tag.Equals("Title"))
                 throw new Exception("Tag " + tag + " not allowed.");
-            Hashtable attributes = new Hashtable(h);
+            var attributes = new GenericHashTable<string, object>();
+            foreach (var kv in h)
+                attributes[kv.Key] = kv.Value;
+
             attributes["Title"] = "";
             attributes.Remove("Kids");
             attr.Push(attributes);
@@ -792,7 +796,7 @@ namespace iTextSharp.text.pdf {
         public void Text(String str) {
             if (attr.Count == 0)
                 return;
-            Hashtable attributes = (Hashtable)attr.Peek();
+            var attributes = attr.Peek();
             String title = (String)attributes["Title"];
             title += str;
             attributes["Title"] = title;

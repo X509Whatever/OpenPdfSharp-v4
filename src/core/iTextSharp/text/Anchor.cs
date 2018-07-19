@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.util;
 
 using iTextSharp.text.html;
@@ -195,11 +195,11 @@ namespace iTextSharp.text
         /// Gets all the chunks in this element.
         /// </summary>
         /// <value>an ArrayList</value>
-        public override ArrayList Chunks 
+        public override IList<Chunk> Chunks 
         {
             get 
             {
-                ArrayList tmp = new ArrayList();
+                var tmp = new List<Chunk>();
                 bool localDestination = (reference != null && reference.StartsWith("#"));
                 bool notGotoOK = true;
                 foreach (Chunk chunk in this) 

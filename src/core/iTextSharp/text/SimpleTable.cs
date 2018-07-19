@@ -277,7 +277,7 @@ namespace iTextSharp.text
         /**
         * @see com.lowagie.text.TextElementArray#add(java.lang.Object)
         */
-        public bool Add(Object o) {
+        public bool Add(IElement o) {
             try {
                 AddElement((SimpleCell)o);
                 return true;

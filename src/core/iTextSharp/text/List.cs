@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.util;
 using iTextSharp.text.factories;
 
@@ -115,7 +115,7 @@ namespace iTextSharp.text {
         public const bool LOWERCASE = true;
     
         /// <summary> This is the ArrayList containing the different ListItems. </summary>
-        protected ArrayList list = new ArrayList();
+        protected IList<IElement> list = new List<IElement>();
     
         /** Indicates if the list has to be numbered. */
         protected bool numbered = false;
@@ -250,9 +250,9 @@ namespace iTextSharp.text {
         /// Gets all the chunks in this element.
         /// </summary>
         /// <value>an ArrayList</value>
-        public ArrayList Chunks {
+        public IList<Chunk> Chunks {
             get {
-                ArrayList tmp = new ArrayList();
+                var tmp = new List<Chunk>();
                 foreach (IElement ele in list) {
                     tmp.AddRange(ele.Chunks);
                 }
@@ -267,7 +267,7 @@ namespace iTextSharp.text {
         /// </summary>
         /// <param name="o">the object to add</param>
         /// <returns>true is successful</returns>
-        public virtual bool Add(Object o) {
+        public virtual bool Add(IElement o) {
             if (o is ListItem) {
                 ListItem item = (ListItem) o;
                 if (numbered || lettered) {
@@ -295,9 +295,7 @@ namespace iTextSharp.text {
                 list.Add(nested);
                 return true;
             }
-            else if (o is string) {
-                return this.Add(new ListItem((string) o));
-            }
+
             return false;
         }
     
@@ -463,7 +461,7 @@ namespace iTextSharp.text {
         /// Gets all the items in the list.
         /// </summary>
         /// <value>an ArrayList containing ListItems</value>
-        public ArrayList Items {
+        public IList<IElement> Items {
             get {
                 return list;
             }

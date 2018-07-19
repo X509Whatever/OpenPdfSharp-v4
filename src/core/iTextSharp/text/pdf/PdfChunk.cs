@@ -110,7 +110,8 @@ namespace iTextSharp.text.pdf {
         /** The encoding. */
         protected string encoding = BaseFont.WINANSI;
     
-    
+
+
         /** The font for this <CODE>PdfChunk</CODE>. */
         protected PdfFont font;
 
@@ -216,10 +217,10 @@ namespace iTextSharp.text.pdf {
             }
             font = new PdfFont(baseFont, size);
             // other style possibilities
-            Hashtable attr = chunk.Attributes;
+            var attr = chunk.Attributes;
             if (attr != null) {
-                foreach (DictionaryEntry entry in attr) {
-                    string name = (string)entry.Key;
+                foreach (var entry in attr) {
+                    string name = entry.Key;
                     if (keysAttributes.ContainsKey(name)) {
                         attributes[name] = entry.Value;
                     }

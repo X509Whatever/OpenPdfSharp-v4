@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using iTextSharp.text;
 /*
@@ -85,8 +86,8 @@ namespace iTextSharp.text.pdf {
                 }
             }
         };
-        protected Hashtable indirects;
-        protected Hashtable indirectMap;
+        protected GenericHashTable<RefKey, IndirectReferences> indirects;
+        protected GenericHashTable<PdfReader, GenericHashTable<RefKey, IndirectReferences>> indirectMap;
         protected int currentObjectNum = 1;
         protected PdfReader reader;
         protected PdfIndirectReference acroForm;
@@ -135,7 +136,7 @@ namespace iTextSharp.text.pdf {
         public PdfCopy(Document document, Stream os) : base(new PdfDocument(), os) {
             document.AddDocListener(pdf);
             pdf.AddWriter(this);
-            indirectMap = new Hashtable();
+            indirectMap = new GenericHashTable<PdfReader, GenericHashTable<RefKey, IndirectReferences>>();
         }
 
         /** Checks if the content is automatically adjusted to compensate
@@ -194,7 +195,7 @@ namespace iTextSharp.text.pdf {
         protected virtual PdfIndirectReference CopyIndirect(PRIndirectReference inp) {
             PdfIndirectReference theRef;
             RefKey key = new RefKey(inp);
-            IndirectReferences iRef = (IndirectReferences)indirects[key] ;
+            IndirectReferences iRef = indirects[key] ;
             if (iRef != null) {
                 theRef = iRef.Ref;
                 if (iRef.Copied) {
@@ -318,9 +319,9 @@ namespace iTextSharp.text.pdf {
         */
         protected void SetFromReader(PdfReader reader) {
             this.reader = reader;
-            indirects = (Hashtable)indirectMap[reader] ;
+            indirects = indirectMap[reader];
             if (indirects == null) {
-                indirects = new Hashtable();
+                indirects = new GenericHashTable<RefKey, IndirectReferences>();
                 indirectMap[reader] = indirects;
                 PdfDictionary catalog = reader.Catalog;
                 PRIndirectReference refi = null;
@@ -345,7 +346,7 @@ namespace iTextSharp.text.pdf {
             reader.ReleasePage(pageNum);
             RefKey key = new RefKey(origRef);
             PdfIndirectReference pageRef;
-            IndirectReferences iRef = (IndirectReferences)indirects[key] ;
+            IndirectReferences iRef = indirects[key] ;
             if (iRef != null && !iRef.Copied) {
                 pageReferences.Add(iRef.Ref);
                 iRef.SetCopied();
@@ -393,7 +394,7 @@ namespace iTextSharp.text.pdf {
             if (hisRef == null) return; // bugfix by John Engla
             RefKey key = new RefKey(hisRef);
             PdfIndirectReference myRef;
-            IndirectReferences iRef = (IndirectReferences)indirects[key] ;
+            IndirectReferences iRef = indirects[key] ;
             if (iRef != null) {
                 acroForm = myRef = iRef.Ref;
             }

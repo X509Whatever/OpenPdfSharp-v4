@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
 using System.util;
 using iTextSharp.text;
@@ -251,8 +252,8 @@ namespace iTextSharp.text.html.simpleparser {
 	    * @param	h	a HashMap that should have at least a key named
 	    * style. After this method is invoked, more keys could be added.
 	    */
-        public static void InsertStyle(Hashtable h) {
-            String style = (String)h["style"];
+        public static void InsertStyle(GenericHashTable<string, string> h) {
+            String style = h["style"];
             if (style == null)
                 return;
             Properties prop = Markup.ParseAttributes(style);
@@ -313,8 +314,8 @@ namespace iTextSharp.text.html.simpleparser {
 	    * @param cprops
 	    * @since 2.1.3
 	    */
-        public static void InsertStyle(Hashtable h, ChainedProperties cprops) {
-            String style = (String)h["style"];
+        public static void InsertStyle(GenericHashTable<string, string> h, ChainedProperties cprops) {
+            String style = h["style"];
             if (style == null)
                 return;
             Properties prop = Markup.ParseAttributes(style);

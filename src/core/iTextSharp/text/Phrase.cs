@@ -1,6 +1,6 @@
 using System;
 using System.Text;
-using System.Collections;
+using System.Collections.Generic;
 using System.util;
 using iTextSharp.text.html;
 using iTextSharp.text.pdf;
@@ -29,7 +29,7 @@ namespace iTextSharp.text {
     /// Phrase phrase5 = new Phrase(18, new Chunk("this is a phrase", FontFactory.GetFont(FontFactory.HELVETICA, 16, Font.BOLD, new Color(255, 0, 0)));</strong>
     /// </code>
     /// </example>
-    public class Phrase : ArrayList, ITextElementArray {
+    public class Phrase : List<IElement>, ITextElementArray {
     
         // membervariables
     
@@ -159,9 +159,9 @@ namespace iTextSharp.text {
         /// Gets all the chunks in this element.
         /// </summary>
         /// <value>an ArrayList</value>
-        public virtual ArrayList Chunks {
+        public virtual IList<Chunk> Chunks {
             get {
-                ArrayList tmp = new ArrayList();
+                var tmp = new List<Chunk>();
                 foreach (IElement ele in this) {
                     tmp.AddRange(ele.Chunks);
                 }
@@ -230,16 +230,8 @@ namespace iTextSharp.text {
         /// </summary>
         /// <param name="o">an object of type Chunk, Anchor or Phrase</param>
         /// <returns>a bool</returns>
-        public virtual new bool Add(Object o) {
+        public virtual new bool Add(IElement o) {
             if (o == null) return false;
-            if (o is string) {
-                base.Add(new Chunk((string) o, font));
-                return true;
-            }
-            if (o is IRtfElementInterface) {
-        	    base.Add(o);
-                return true;
-            }
             try {
                 IElement element = (IElement) o;
                 switch (element.Type) {
@@ -283,8 +275,8 @@ namespace iTextSharp.text {
         /// </summary>
         /// <param name="collection">a collection of Chunks, Anchors and Phrases.</param>
         /// <returns>true if the action succeeded, false if not.</returns>
-        public bool AddAll(ICollection collection) {
-            foreach (object itm in collection) {
+        public bool AddAll(ICollection<IElement> collection) {
+            foreach (var itm in collection) {
                 this.Add(itm);
             }
             return true;
@@ -334,7 +326,7 @@ namespace iTextSharp.text {
         /// Adds a Object to the Paragraph.
         /// </summary>
         /// <param name="obj">the object to add.</param>
-        public void AddSpecial(Object obj) {
+        public void AddSpecial(IElement obj) {
             base.Add(obj);
         }
     
@@ -486,7 +478,7 @@ namespace iTextSharp.text {
                 while ((index = SpecialSymbol.Index(str)) > -1) {
                     if (index > 0) {
                         String firstPart = str.Substring(0, index);
-                        ((ArrayList)p).Add(new Chunk(firstPart, font));
+                        p.Add(new Chunk(firstPart, font));
                         str = str.Substring(index);
                     }
                     Font symbol = new Font(Font.SYMBOL, font.Size, font.Style, font.Color);
@@ -497,11 +489,11 @@ namespace iTextSharp.text {
                         buf.Append(SpecialSymbol.GetCorrespondingSymbol(str[0]));
                         str = str.Substring(1);
                     }
-                    ((ArrayList)p).Add(new Chunk(buf.ToString(), symbol));
+                    p.Add(new Chunk(buf.ToString(), symbol));
                 }
             }
             if (str != null && str.Length != 0) {
-        	    ((ArrayList)p).Add(new Chunk(str, font));
+        	    p.Add(new Chunk(str, font));
             }
     	    return p;
         }

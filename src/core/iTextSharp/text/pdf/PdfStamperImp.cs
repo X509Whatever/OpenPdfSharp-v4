@@ -1238,7 +1238,7 @@ namespace iTextSharp.text.pdf {
         }
         
         internal void SetJavaScript() {
-            Hashtable djs = pdf.GetDocumentLevelJS();
+            var djs = pdf.GetDocumentLevelJS();
             if (djs.Count == 0)
                 return;
             PdfDictionary catalog = reader.Catalog;
@@ -1249,12 +1249,12 @@ namespace iTextSharp.text.pdf {
                 MarkUsed(catalog);
             }
             MarkUsed(names);
-            PdfDictionary tree = PdfNameTree.WriteTree(djs, this);
+            var tree = PdfNameTree.WriteTree(djs, this);
             names.Put(PdfName.JAVASCRIPT, AddToBody(tree).IndirectReference);
         }
             
         void AddFileAttachments() {
-            Hashtable fs = pdf.GetDocumentFileAttachment();
+            var fs = pdf.GetDocumentFileAttachment();
             if (fs.Count == 0)
                 return;
             PdfDictionary catalog = reader.Catalog;
@@ -1265,8 +1265,8 @@ namespace iTextSharp.text.pdf {
                 MarkUsed(catalog);
             }
             MarkUsed(names);
-            Hashtable old = PdfNameTree.ReadTree((PdfDictionary)PdfReader.GetPdfObjectRelease(names.Get(PdfName.EMBEDDEDFILES)));
-            foreach (DictionaryEntry entry in fs) {
+            var old = PdfNameTree.ReadTree((PdfDictionary)PdfReader.GetPdfObjectRelease(names.Get(PdfName.EMBEDDEDFILES)));
+            foreach (var entry in fs) {
                 String name = (String)entry.Key;
                 int k = 0;
                 String nn = name;
@@ -1518,7 +1518,7 @@ namespace iTextSharp.text.pdf {
             PdfIndirectReference refi;
             PdfLayer layer;
             Hashtable ocgmap = new Hashtable();
-            for (ListIterator i = ocgs.GetListIterator(); i.HasNext();) {
+            for (var i = ocgs.GetListIterator(); i.HasNext();) {
                 refi = (PdfIndirectReference)i.Next();
                 layer = new PdfLayer(null);
                 layer.Ref = refi;
@@ -1529,7 +1529,7 @@ namespace iTextSharp.text.pdf {
             PdfDictionary d = dict.GetAsDict(PdfName.D);
             PdfArray off = d.GetAsArray(PdfName.OFF);
             if (off != null) {
-                for (ListIterator i = off.GetListIterator(); i.HasNext(); ) {
+                for (var i = off.GetListIterator(); i.HasNext(); ) {
                     refi = (PdfIndirectReference)i.Next();
                     layer = (PdfLayer)ocgmap[refi.ToString()];
                     layer.On = false;
@@ -1583,7 +1583,7 @@ namespace iTextSharp.text.pdf {
                             parent.AddChild(layer);
                         }
                         PdfArray array = new PdfArray();
-                        for (ListIterator j = sub.GetListIterator(); j.HasNext(); ) {
+                        for (var j = sub.GetListIterator(); j.HasNext(); ) {
                             array.Add((PdfObject)j.Next());
                         }
                         AddOrder(layer, array, ocgmap);

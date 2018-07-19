@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using iTextSharp.text;
 
 /*
@@ -50,6 +50,6 @@ using iTextSharp.text;
  */
 namespace iTextSharp.text.html.simpleparser {
     public interface IImg {
-        bool Process(Image img, Hashtable h, ChainedProperties cprops, IDocListener doc);
+        bool Process(Image img, GenericHashTable<string, string> h, ChainedProperties cprops, IDocListener doc);
     }
 }

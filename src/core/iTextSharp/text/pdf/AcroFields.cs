@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.IO;
 using System.Xml;
 using System.util;
@@ -1012,18 +1014,18 @@ namespace iTextSharp.text.pdf {
         * Sets a field property. Valid property names are:
         * <p>
         * <ul>
-        * <li>flags - a set of flags specifying various characteristics of the field’s widget annotation.
-        * The value of this entry replaces that of the F entry in the form’s corresponding annotation dictionary.<br>
-        * <li>setflags - a set of flags to be set (turned on) in the F entry of the form’s corresponding
+        * <li>flags - a set of flags specifying various characteristics of the fieldï¿½s widget annotation.
+        * The value of this entry replaces that of the F entry in the formï¿½s corresponding annotation dictionary.<br>
+        * <li>setflags - a set of flags to be set (turned on) in the F entry of the formï¿½s corresponding
         * widget annotation dictionary. Bits equal to 1 cause the corresponding bits in F to be set to 1.<br>
-        * <li>clrflags - a set of flags to be cleared (turned off) in the F entry of the form’s corresponding
+        * <li>clrflags - a set of flags to be cleared (turned off) in the F entry of the formï¿½s corresponding
         * widget annotation dictionary. Bits equal to 1 cause the corresponding
         * bits in F to be set to 0.<br>
         * <li>fflags - a set of flags specifying various characteristics of the field. The value
-        * of this entry replaces that of the Ff entry in the form’s corresponding field dictionary.<br>
-        * <li>setfflags - a set of flags to be set (turned on) in the Ff entry of the form’s corresponding
+        * of this entry replaces that of the Ff entry in the formï¿½s corresponding field dictionary.<br>
+        * <li>setfflags - a set of flags to be set (turned on) in the Ff entry of the formï¿½s corresponding
         * field dictionary. Bits equal to 1 cause the corresponding bits in Ff to be set to 1.<br>
-        * <li>clrfflags - a set of flags to be cleared (turned off) in the Ff entry of the form’s corresponding
+        * <li>clrfflags - a set of flags to be cleared (turned off) in the Ff entry of the formï¿½s corresponding
         * field dictionary. Bits equal to 1 cause the corresponding bits in Ff
         * to be set to 0.<br>
         * </ul>
@@ -1966,9 +1968,9 @@ namespace iTextSharp.text.pdf {
         * Gets the field names that have signatures and are signed.
         * @return the field names that have signatures and are signed
         */    
-        public ArrayList GetSignatureNames() {
+        public IEnumerable<string> GetSignatureNames() {
             FindSignatureNames();
-            return new ArrayList(sigNames.Keys);
+            return sigNames.Keys.Cast<string>().ToArray();
         }
         
         /**
@@ -1989,6 +1991,32 @@ namespace iTextSharp.text.pdf {
             }
             return sigs;
         }
+
+	private void ClearSignature(PdfDictionary dic) {
+	    dic.Remove(PdfName.AP);
+	    dic.Remove(PdfName.AS);
+	    dic.Remove(PdfName.V);
+	    dic.Remove(PdfName.DV);
+	    dic.Remove(PdfName.SV);
+	    dic.Remove(PdfName.FF);
+	    dic.Put(PdfName.F, new PdfNumber(PdfAnnotation.FLAGS_PRINT));
+	}
+
+	public bool ClearSignatureField(string name) {
+	    sigNames = null;
+	    FindSignatureNames();
+	    if (!sigNames.ContainsKey(name))
+		return false;
+	    var sig = (Item)fields[name];
+	    sig.MarkUsed(this, Item.WRITE_VALUE | Item.WRITE_WIDGET);
+	    for (int k = 0; k < sig.Size; ++k) {
+		ClearSignature(sig.GetMerged(k));
+		ClearSignature(sig.GetWidget(k));
+		ClearSignature(sig.GetValue(k));
+	    }
+
+	    return true;
+	}
         
         /**
         * Gets the signature dictionary, the one keyed by /V.

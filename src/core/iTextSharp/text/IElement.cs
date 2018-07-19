@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 /*
  * $Id: IElement.cs,v 1.4 2008/05/13 11:25:10 psoares33 Exp $
@@ -113,7 +113,7 @@ namespace iTextSharp.text {
         /// Gets all the chunks in this element.
         /// </summary>
         /// <value>an ArrayList</value>
-        ArrayList Chunks {
+        IList<Chunk> Chunks {
             get;
         }
     

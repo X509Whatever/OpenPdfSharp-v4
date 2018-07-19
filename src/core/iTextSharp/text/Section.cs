@@ -1,6 +1,6 @@
 using System;
 using System.Text;
-using System.Collections;
+using System.Collections.Generic;
 using System.util;
 using iTextSharp.text.factories;
 
@@ -81,7 +81,7 @@ namespace iTextSharp.text {
     /// section11.Add(someSectionText);</strong>strong>
     /// </code>
     /// </example>
-    public class Section : ArrayList, ITextElementArray, ILargeElement {
+    public class Section : List<IElement>, ITextElementArray, ILargeElement {
         
         // constant
         /**
@@ -122,7 +122,7 @@ namespace iTextSharp.text {
         protected int subsections = 0;
     
         ///<summary> This is the complete list of sectionnumbers of this section and the parents of this section. </summary>
-        protected internal ArrayList numbers = null;
+        protected internal List<int> numbers = null;
     
     /**
         * Indicates if the Section will be complete once added to the document.
@@ -181,8 +181,8 @@ namespace iTextSharp.text {
         /// </summary>
         /// <param name="number">the number of this section</param>
         /// <param name="numbers">an ArrayList, containing the numbers of the Parent</param>
-        private void SetNumbers(int number, ArrayList numbers) {
-            this.numbers = new ArrayList();
+        private void SetNumbers(int number, List<int> numbers) {
+            this.numbers = new List<int>();
             this.numbers.Add(number);
             this.numbers.AddRange(numbers);
         }
@@ -221,9 +221,9 @@ namespace iTextSharp.text {
         /// Gets all the chunks in this element.
         /// </summary>
         /// <value>an ArrayList</value>
-        public ArrayList Chunks {
+        public IList<Chunk> Chunks {
             get {
-                ArrayList tmp = new ArrayList();
+                var tmp = new List<Chunk>();
                 foreach (IElement ele in this) {
                     tmp.AddRange(ele.Chunks);
                 }
@@ -279,9 +279,9 @@ namespace iTextSharp.text {
         /// </summary>
         /// <param name="o">an object of type Paragraph, List, Table or another Section</param>
         /// <returns>a bool</returns>
-        public new bool Add(Object o) {
+        public new bool Add(IElement o) {
             try {
-                IElement element = (IElement) o;
+                var element =  o;
                 if (element.Type == Element.SECTION) {
                     Section section = (Section) o;
                     section.SetNumbers(++subsections, numbers);
@@ -314,8 +314,8 @@ namespace iTextSharp.text {
         /// </summary>
         /// <param name="collection">a collection of Paragraphs, Lists and/or Tables</param>
         /// <returns>true if the action succeeded, false if not.</returns>
-        public bool AddAll(ICollection collection) {
-            foreach (object itm in collection) {
+        public bool AddAll(IEnumerable<IElement> collection) {
+            foreach (var itm in collection) {
                 this.Add(itm);
             }
             return true;
@@ -491,7 +491,7 @@ namespace iTextSharp.text {
         * @return   a Paragraph object
         * @since    iText 2.0.8
         */
-        public static Paragraph ConstructTitle(Paragraph title, ArrayList numbers, int numberDepth, int numberStyle) {
+        public static Paragraph ConstructTitle(Paragraph title, List<int> numbers, int numberDepth, int numberStyle) {
             if (title == null) {
                 return null;
             }

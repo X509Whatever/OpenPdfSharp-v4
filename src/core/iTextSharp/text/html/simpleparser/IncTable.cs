@@ -1,5 +1,7 @@
 using System;
+using System.Linq;
 using System.Collections;
+using System.Collections.Generic;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 /*
@@ -56,24 +58,24 @@ namespace iTextSharp.text.html.simpleparser {
     * @author  psoares
     */
     public class IncTable {
-        private Hashtable props = new Hashtable();
-        private ArrayList rows = new ArrayList();
-        private ArrayList cols;
+        private GenericHashTable<string, string> props = new GenericHashTable<string, string>();
+        private IList<PdfPCell[]> rows = new List<PdfPCell[]>();
+        private List<PdfPCell> cols;
         /** Creates a new instance of IncTable */
-        public IncTable(Hashtable props) {
-            foreach (DictionaryEntry dc in props)
-                this.props[dc.Key] = dc.Value;
+        public IncTable(GenericHashTable<string, string> props) {
+            foreach (var item in props)
+                this.props[item.Key] = item.Value;
         }
-        
+
         public void AddCol(PdfPCell cell) {
             if (cols == null)
-                cols = new ArrayList();
+                cols = new List<PdfPCell>();
             cols.Add(cell);
         }
         
-        public void AddCols(ArrayList ncols) {
+        public void AddCols(IList<PdfPCell> ncols) {
             if (cols == null)
-                cols = new ArrayList(ncols);
+                cols = new List<PdfPCell>(ncols);
             else
                 cols.AddRange(ncols);
         }
@@ -81,12 +83,12 @@ namespace iTextSharp.text.html.simpleparser {
         public void EndRow() {
             if (cols != null) {
                 cols.Reverse();
-                rows.Add(cols);
+                rows.Add(cols.ToArray());
                 cols = null;
             }
         }
         
-        public ArrayList Rows {
+        public IEnumerable<PdfPCell[]> Rows {
             get {
                 return rows;
             }
@@ -96,12 +98,12 @@ namespace iTextSharp.text.html.simpleparser {
             if (rows.Count == 0)
                 return new PdfPTable(1);
             int ncol = 0;
-            ArrayList c0 = (ArrayList)rows[0];
-            for (int k = 0; k < c0.Count; ++k) {
-                ncol += ((PdfPCell)c0[k]).Colspan;
+            var c0 = rows[0];
+            for (int k = 0; k < c0.Length; ++k) {
+                ncol += (c0[k]).Colspan;
             }
             PdfPTable table = new PdfPTable(ncol);
-            String width = (String)props["width"];
+            String width = props["width"];
             if (width == null)
                 table.WidthPercentage = 100;
             else {
@@ -113,9 +115,9 @@ namespace iTextSharp.text.html.simpleparser {
                 }
             }
             for (int row = 0; row < rows.Count; ++row) {
-                ArrayList col = (ArrayList)rows[row];
-                for (int k = 0; k < col.Count; ++k) {
-                    table.AddCell((PdfPCell)col[k]);
+                var col = rows[row];
+                for (int k = 0; k < col.Length; ++k) {
+                    table.AddCell(col[k]);
                 }
             }
             return table;

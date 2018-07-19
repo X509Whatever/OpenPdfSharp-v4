@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 /*
  * Copyright 2004 Paulo Soares
  *
@@ -81,7 +82,7 @@ public class ChainedProperties {
             return false;
         }
         
-        public void AddToChain(String key, Hashtable prop) {
+        public void AddToChain(String key, GenericHashTable<string, string> prop) {
             // adjust the font size
             String value = (String)prop[ElementTags.SIZE];
             if (value != null) {
@@ -133,3 +134,5 @@ public class ChainedProperties {
         }
     }
 }
+
+// FIXME: Replace "] dict accessor w/ TrygetValue

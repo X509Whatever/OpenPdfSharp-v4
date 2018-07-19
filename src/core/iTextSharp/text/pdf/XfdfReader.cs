@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Collections;
+using System.Collections.Generic;
 using iTextSharp.text.xml.simpleparser;
 /*
  *
@@ -151,7 +152,7 @@ namespace iTextSharp.text.pdf {
         * @param tag the tag name
         * @param h the tag's attributes
         */    
-        public void StartElement(String tag, Hashtable h) {
+        public void StartElement(String tag, GenericHashTable<string, string> h) {
             if ( !foundRoot ) {
                 if (!tag.Equals("xfdf"))
                     throw new Exception("Root element is not Bookmark.");

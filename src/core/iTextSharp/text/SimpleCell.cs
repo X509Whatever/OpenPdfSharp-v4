@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using iTextSharp.text.pdf;
 
 namespace iTextSharp.text
@@ -14,7 +14,7 @@ namespace iTextSharp.text
         /** the CellAttributes object represents a cell. */
         public new const bool CELL = false;
         /** the content of the Cell. */
-        private ArrayList content = new ArrayList();
+        private IList<IElement> content = new List<IElement>();
         /** the width of the Cell. */
         private float width = 0f;
         /** the widthpercentage of the Cell. */
@@ -413,7 +413,7 @@ namespace iTextSharp.text
         /**
         * @return Returns the content.
         */
-        internal ArrayList Content {
+        internal IList<IElement> Content {
             get {
                 return content;
             }
@@ -422,9 +422,9 @@ namespace iTextSharp.text
         /**
         * @see com.lowagie.text.TextElementArray#add(java.lang.Object)
         */
-        public bool Add(Object o) {
+        public bool Add(IElement o) {
             try {
-                AddElement((IElement)o);
+                AddElement(o);
                 return true;
             }
             catch (InvalidCastException) {

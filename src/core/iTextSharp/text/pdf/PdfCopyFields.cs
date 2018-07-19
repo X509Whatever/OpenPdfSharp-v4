@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using iTextSharp.text.pdf.interfaces;
 using Org.BouncyCastle.X509;
@@ -99,7 +100,7 @@ namespace iTextSharp.text.pdf {
         * @param pagesToKeep the pages to keep
         * @throws DocumentException on error
         */    
-        public void AddDocument(PdfReader reader, ArrayList pagesToKeep) {
+        public void AddDocument(PdfReader reader, IEnumerable<int> pagesToKeep) {
             fc.AddDocument(reader, pagesToKeep);
         }
 
@@ -176,7 +177,7 @@ namespace iTextSharp.text.pdf {
         * {@link SimpleBookmark}.
         * @param outlines the bookmarks or <CODE>null</CODE> to remove any
         */    
-        public ArrayList Outlines {
+        public IList<GenericHashTable<string, object>> Outlines {
             set {
                 fc.Outlines = value;
             }

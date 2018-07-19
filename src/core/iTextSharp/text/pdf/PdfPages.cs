@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 /*
  * $Id: PdfPages.cs,v 1.3 2008/05/13 11:25:21 psoares33 Exp $
@@ -66,8 +67,8 @@ namespace iTextSharp.text.pdf {
 
     public class PdfPages {
         
-        private ArrayList pages = new ArrayList();
-        private ArrayList parents = new ArrayList();
+        private List<PdfObject> pages = new List<PdfObject>();
+        private List<PdfObject> parents = new List<PdfObject>();
         private int leafSize = 10;
         private PdfWriter writer;
         private PdfIndirectReference topParent;
@@ -104,9 +105,9 @@ namespace iTextSharp.text.pdf {
             if (pages.Count == 0)
                 throw new IOException("The document has no pages.");
             int leaf = 1;
-            ArrayList tParents = parents;
-            ArrayList tPages = pages;
-            ArrayList nextParents = new ArrayList();
+            var tParents = parents;
+            var tPages = pages;
+            var nextParents = new List<PdfObject>();
             while (true) {
                 leaf *= leafSize;
                 int stdCount = leafSize;
@@ -127,8 +128,9 @@ namespace iTextSharp.text.pdf {
                     PdfDictionary top = new PdfDictionary(PdfName.PAGES);
                     top.Put(PdfName.COUNT, new PdfNumber(thisLeaf));
                     PdfArray kids = new PdfArray();
-                    ArrayList intern = kids.ArrayList;
-                    intern.AddRange(tPages.GetRange(p * stdCount, count));
+                    var intern = kids.ArrayList;
+                    foreach (var k in tPages.GetRange(p * stdCount, count))
+                        intern.Add(k);
                     top.Put(PdfName.KIDS, kids);
                     if (tParents.Count > 1) {
                         if ((p % leafSize) == 0)
@@ -146,7 +148,7 @@ namespace iTextSharp.text.pdf {
                 }
                 tPages = tParents;
                 tParents = nextParents;
-                nextParents = new ArrayList();
+                nextParents = new List<PdfObject>();
             }
         }
         
@@ -188,7 +190,7 @@ namespace iTextSharp.text.pdf {
                     throw new DocumentException("Page reordering requires no page repetition. Page " + p + " is repeated.");
                 temp[p - 1] = true;
             }
-            Object[] copy = pages.ToArray();
+            var copy = pages.ToArray();
             for (int k = 0; k < max; ++k) {
                 pages[k] = copy[order[k] - 1];
             }

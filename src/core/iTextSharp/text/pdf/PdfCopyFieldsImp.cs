@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using System.util;
 /*
@@ -87,7 +88,7 @@ namespace iTextSharp.text.pdf {
             nd.AddDocListener(pdf);
         }
         
-        internal void AddDocument(PdfReader reader, ArrayList pagesToKeep) {
+        internal void AddDocument(PdfReader reader, IEnumerable<int> pagesToKeep) {
             if (!readers2intrefs.ContainsKey(reader) && reader.Tampered)
                 throw new DocumentException("The document was reused.");
             reader = new PdfReader(reader);        
@@ -196,7 +197,7 @@ namespace iTextSharp.text.pdf {
                 }
                 case PdfObject.ARRAY: {
                     //PdfArray arr = new PdfArray();
-                    for (ListIterator it = ((PdfArray)obj).GetListIterator(); it.HasNext();) {
+                    for (var it = ((PdfArray)obj).GetListIterator(); it.HasNext();) {
                         PdfObject ob = (PdfObject)it.Next();
                         if (ob != null && ob.IsIndirect()) {
                             PRIndirectReference ind = (PRIndirectReference)ob;

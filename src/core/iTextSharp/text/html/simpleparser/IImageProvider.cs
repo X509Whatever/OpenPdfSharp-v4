@@ -1,5 +1,5 @@
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using iTextSharp.text;
 /*
  * Copyright 2007 Paulo Soares
@@ -50,6 +50,6 @@ using iTextSharp.text;
 
 namespace iTextSharp.text.html.simpleparser {
     public interface IImageProvider {
-        Image GetImage(String src, Hashtable h, ChainedProperties cprops, IDocListener doc);
+        Image GetImage(String src, GenericHashTable<string, string> h, ChainedProperties cprops, IDocListener doc);
     }
 }
