@@ -21,7 +21,7 @@
 		public new V this[K key]
 		{
 			get => TryGetValue(key, out var value) ? value : default;
-			set => this[key] = value;
+			set => base[key] = value;
 		}
 	}
 }

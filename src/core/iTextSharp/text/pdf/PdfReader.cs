@@ -1042,7 +1042,12 @@ namespace iTextSharp.text.pdf {
         
         protected internal void ReadDocObj() {
             var streams = new List<PRStream>();
-            xrefObj = new List<PdfObject>(xref.Length / 2);
+            var length = xref.Length / 2;
+            xrefObj = new List<PdfObject>(length);
+
+            for (var x = 0; x < length; x++)
+                xrefObj.Add(null); //< Initialize w/ nulls.
+
             for (int k = 2; k < xref.Length; k += 2) {
                 int pos = xref[k];
                 if (pos <= 0 || xref[k + 1] > 0)
