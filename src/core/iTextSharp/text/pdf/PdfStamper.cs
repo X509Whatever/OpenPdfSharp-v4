@@ -175,6 +175,9 @@ namespace iTextSharp.text.pdf {
         * @throws IOException on error
         */
         public void Close() {
+            if (stamper.closed)
+                return;
+
             if (!hasSignature) {
                 stamper.Close(moreInfo);
                 return;
