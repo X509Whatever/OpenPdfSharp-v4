@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>iTextSharp-LGPL-BouncyCastle-1.8</id>
-    <version>4.1.7</version>
-	<title>iTextSharp (LGPL / MPL), Bouncy Castle-1.8</title>
+    <id>iTextFork-LGPL</id>
+    <version>4.1.7.1</version>
+	<title>iTextFork (LGPL / MPL)</title>
     <authors>Bruno Lowagie, Paulo Soares, Serafin Roberto</authors>
     <owners>Serafin Roberto</owners>
-    <projectUrl>https://github.com/Sbaia/iTextSharp-LGPL-BouncyCastle</projectUrl>
+    <projectUrl>https://github.com/evicertia/iTextSharp-v4</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A fork of iTextSharp (LGPL / MPL) 4.1.6 compiled in 4.5.2 that includes Bouncy Castle 1.8 as a NuGet package instead of directly including the source code.</description>
+    <description>A fork of iTextSharp (LGPL / MPL) 4.1.6 compiled in 4.6.2 that includes Bouncy Castle 2.3.1 as a NuGet package instead of directly including the source code.</description>
     <releaseNotes>Updated to reference Bouncy Castle as a NuGet package instead of directly including the source code.</releaseNotes>
     <copyright>Copyright 2016</copyright>
     <tags>pdf itext itextsharp</tags>

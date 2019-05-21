@@ -204,7 +204,7 @@ namespace iTextSharp.text.pdf {
             if (producer == null) {
                 producer = Document.Version;
             }
-            else if (producer.IndexOf(Document.Product) == -1) {
+            else if (false && producer.IndexOf(Document.Product) == -1) {
                 StringBuilder buf = new StringBuilder(producer);
                 buf.Append("; modified using ");
                 buf.Append(Document.Version);
