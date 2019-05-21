@@ -142,7 +142,7 @@ public class PdfArray : PdfObject {
         PdfObject obj = null;
         foreach (PdfObject obja in arrayList) {
             obj = (obja == null) ? PdfNull.PDFNULL : obja;
-            type = obj.Type;
+            var type = obj.Type; //< #23029
             if (!first && type != PdfObject.ARRAY && type != PdfObject.DICTIONARY && type != PdfObject.NAME && type != PdfObject.STRING)
                 os.WriteByte((byte)' ');
             first = false;
