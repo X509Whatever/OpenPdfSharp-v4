@@ -1595,6 +1595,8 @@ namespace iTextSharp.text.pdf {
                     int num = tokens.Reference;
                     PRIndirectReference refi = new PRIndirectReference(this, num, tokens.Generation);
                     return refi;
+                case PRTokeniser.TK_ENDOFFILE:
+                    throw new IOException("Unexpected EOL detected reading the document?!");
                 default:
                     String sv = tokens.StringValue;
                     if ("null".Equals(sv)) {

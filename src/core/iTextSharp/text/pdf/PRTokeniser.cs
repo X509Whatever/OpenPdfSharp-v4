@@ -67,7 +67,8 @@ namespace iTextSharp.text.pdf {
         public const int TK_END_DIC = 8;
         public const int TK_REF = 9;
         public const int TK_OTHER = 10;
-    
+        public const int TK_ENDOFFILE = 1;
+
         internal const string EMPTY = "";
 
     
@@ -274,7 +275,10 @@ namespace iTextSharp.text.pdf {
                 ch = file.Read();
             } while (ch != -1 && IsWhitespace(ch));
             if (ch == -1)
+            {
+                type = TK_ENDOFFILE;
                 return false;
+            }
             // Note:  We have to initialize stringValue here, after we've looked for the end of the stream,
             // to ensure that we don't lose the value of a token that might end exactly at the end
             // of the stream
