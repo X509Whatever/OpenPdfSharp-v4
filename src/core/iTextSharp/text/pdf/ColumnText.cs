@@ -1344,9 +1344,8 @@ public class ColumnText {
                     var sub = nt.Rows;
                     
                     // first we add the real header rows (if necessary)
-                    if (!skipHeader) {
-                        for (int j = 0; j < realHeaderRows; ++j) {
-                            PdfPRow headerRow = table.GetRow(j);
+                    if (!skipHeader && realHeaderRows > 0) {
+                        foreach (var headerRow in table.GetRows(0, realHeaderRows)) {
                             sub.Add(headerRow);
                         }
                     }
