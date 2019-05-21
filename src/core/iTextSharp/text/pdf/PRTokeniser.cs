@@ -67,7 +67,7 @@ namespace iTextSharp.text.pdf {
         public const int TK_END_DIC = 8;
         public const int TK_REF = 9;
         public const int TK_OTHER = 10;
-        public const int TK_ENDOFFILE = 1;
+        public const int TK_ENDOFFILE = 11;
 
         internal const string EMPTY = "";
 
