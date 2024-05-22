@@ -85,6 +85,7 @@
     <DebugType>none</DebugType>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>false</Prefer32Bit>
+    <ILRepackInternalize>false</ILRepackInternalize>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
@@ -1467,6 +1468,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="packages\ILRepack.Lib.MSBuild.2.1.18\build\ILRepack.Lib.MSBuild.targets" Condition="Exists('packages\ILRepack.Lib.MSBuild.2.1.18\build\ILRepack.Lib.MSBuild.targets')" />
   <PropertyGroup>
     <PreBuildEvent />
     <PostBuildEvent />
