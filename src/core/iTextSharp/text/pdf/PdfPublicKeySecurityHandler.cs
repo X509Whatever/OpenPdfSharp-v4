@@ -178,7 +178,7 @@ namespace iTextSharp.text.pdf {
                 new Asn1InputStream(new MemoryStream(x509certificate.GetTbsCertificate()));
             TbsCertificateStructure tbscertificatestructure = 
                 TbsCertificateStructure.GetInstance(asn1inputstream.ReadObject());
-            AlgorithmIdentifier algorithmidentifier = tbscertificatestructure.SubjectPublicKeyInfo.Algorithm;
+            AlgorithmIdentifier algorithmidentifier = tbscertificatestructure.SubjectPublicKeyInfo.AlgorithmID;
             Org.BouncyCastle.Asn1.Cms.IssuerAndSerialNumber issuerandserialnumber = 
                 new Org.BouncyCastle.Asn1.Cms.IssuerAndSerialNumber(
                     tbscertificatestructure.Issuer, 
