@@ -227,7 +227,7 @@ namespace iTextSharp.text.pdf {
             string n1 = null;
             string n2 = null;
             int ptr = 0;
-            while (NextToken()) {
+            while (NextToken() || level == 2) {
                 if (type == TK_COMMENT)
                     continue;
                 switch (level) {
@@ -264,6 +264,16 @@ namespace iTextSharp.text.pdf {
                     }
                 }
             }
+
+            if (level > 0)
+            {
+                file.Seek(ptr);
+                type = TK_NUMBER;
+                stringValue = n1;
+                return;
+            }
+
+            ThrowError("Unexpected end of line");
             // if we hit here, the file is either corrupt (stream ended unexpectedly),
             // or the last token ended exactly at the end of a stream.  This last
             // case can occur inside an Object Stream.
