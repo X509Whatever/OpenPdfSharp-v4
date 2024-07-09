@@ -558,6 +558,10 @@ namespace iTextSharp.text.pdf {
         private void ReadDecryptedDocObj() {
             if (encrypted)
                 return;
+
+            if (trailer == null)
+                return;
+
             PdfObject encDic = trailer.Get(PdfName.ENCRYPT);
             if (encDic == null || encDic.ToString().Equals("null"))
                 return;
@@ -1483,8 +1487,7 @@ namespace iTextSharp.text.pdf {
                     }
                 }
             }
-            if (trailer == null)
-                throw new InvalidPdfException("trailer not found.");
+
             xref = new int[top * 2];
             for (int k = 0; k < top; ++k) {
                 int[] obj = xr[k];
