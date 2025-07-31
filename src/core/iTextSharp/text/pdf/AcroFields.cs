@@ -134,8 +134,8 @@ namespace iTextSharp.text.pdf {
                 return;
             for (int k = 1; k <= reader.NumberOfPages; ++k) {
                 PdfDictionary page = reader.GetPageNRelease(k);
-                PdfArray annots = (PdfArray)PdfReader.GetPdfObjectRelease(page.Get(PdfName.ANNOTS), page);
-                if (annots == null)
+                PdfObject pdfObject = PdfReader.GetPdfObjectRelease(page.Get(PdfName.ANNOTS), page);
+                if (!(pdfObject is PdfArray annots))
                     continue;
                 for (int j = 0; j < annots.Size; ++j) {
                     PdfDictionary annot = annots.GetAsDict(j);
